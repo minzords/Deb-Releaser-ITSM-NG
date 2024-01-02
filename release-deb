@@ -1,0 +1,22 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+my $deb_file = shift @ARGV // die "Usage: $0 <deb_file>\n";
+my ($distrib) = $ENV{'PWD'} =~ /\/([^\/]+)$/;
+my @versions;
+
+if ($distrib eq "debian") {
+    @versions = qw(buster bullseye bookworm sid); # Ajoutez ici toutes les versions de Debian
+} elsif ($distrib eq "ubuntu") {
+    @versions = qw(jammy focal bionic); # Ajoutez ici toutes les versions d'Ubuntu
+} else {
+    die "Not supported ($distrib)\n"
+}
+
+foreach my $version (@versions) {
+    my $command = "reprepro -vb . includedeb $version $deb_file";
+    print "$command\n";
+    system($command);
+}
